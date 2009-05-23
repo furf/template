@@ -1,0 +1,8 @@
+{
+  customer: {name:'Dave', status:'gold'},
+  products: [
+    {name:'Computer', qty:1, price:'1299.95'},
+    {name:'Monitor', qty:2, price:'499.95'},
+    {name:'Mouse', qty:1, price:'49.95'}
+  ]
+}

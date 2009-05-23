@@ -1,0 +1,12 @@
+body {font:16px/20px arial,helvetica,sans-serif;}
+table {width:100%;border:2px solid #ccc;border-collapse:collapse;}
+th {text-align:left;}
+th, td {border:1px solid #ccc;padding:0.25em;}
+.odd {background:#eef;}
+.even {background:#fff;}
+
+td.qty {width:10%;}
+td.description {width:60%;}
+td.price, td.subtotal {width:15%;}
+td.qty {text-align:center;}
+td.price, td.subtotal, th.total {text-align:right;}
