@@ -53,14 +53,26 @@ Template.tagDefinitions = {
     replace: '}'
   },
 
+  // Old subroutines didn't support binding of this
+  
+  // 'sub': {
+  //   search: /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\((.*)\)$/,
+  //   replace: 'var $1 = function ($2) {\nvar html = "";'
+  // },
+  // 
+  // '/sub': {
+  //   search: '',
+  //   replace: 'return html;\n};'
+  // },
+
   'sub': {
     search: /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\((.*)\)$/,
-    replace: 'var $1 = function ($2) {\nvar html = "";'
+    replace: 'var $1 = (function(fn, scope) {\nreturn function() {\nreturn fn.apply(scope, arguments);\n};\n})(function ($2) {\nvar html = "";'
   },
 
   '/sub': {
     search: '',
-    replace: 'return html;\n};'
+    replace: 'return html;\n}, this);'
   },
 
   'script': {
