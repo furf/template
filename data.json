@@ -1,4 +1,5 @@
 {
+  dave: 'furf',
   customer: {name:'Dave', status:'gold'},
   products: [
     {name:'Computer', qty:1, price:'1299.95'},
