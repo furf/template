@@ -1,0 +1,36 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+
+	<title>Template</title>
+	<link rel="stylesheet" href="template.css" type="text/css" media="screen" title="no title" charset="utf-8">
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="template-0.7b.js" type="text/javascript" charset="utf-8"></script>
+	<script type="text/javascript">
+	(function($) {
+
+    $.getJSON('data.json', function(data) {
+
+      $.get('template.jst', function(tpl) {
+
+        var template = new Template(tpl);
+        var html = template.render(data);
+
+        $(function() {
+          $('#output').html(html);
+        });
+
+      });
+
+    });
+    
+	})(jQuery);
+	</script>
+</head>
+<body>
+  <div id="output"></div>
+</body>
+</html>
