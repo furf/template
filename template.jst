@@ -1,9 +1,13 @@
+<!-- Template helpers -->
 {script}
+
 var dollarFormat = function(n) {
   return parseFloat(n).toFixed(2);
 };
+
 {/script}
 
+<!-- Render a row from the product table -->
 {sub product(prod, subtotal, cn)}
   {sub productName(prod)}
     ${prod.name.toUpperCase()}
@@ -20,13 +24,14 @@ var dollarFormat = function(n) {
 <h1>${this.customer.name}&rsquo;s Shopping Cart</h1>
 
 <p>
-{if (this.customer.status === "gold")}
+{if (this.customer.status === "gold")} 
   Gold member
 {else}
   Regular member
 {/if}
 </p>
 
+<!-- Render the product table -->
 <table> 
   <thead>
     <tr>
@@ -37,13 +42,18 @@ var dollarFormat = function(n) {
     </tr>
   </thead>
   <tbody>
+    
   {var total = 0}        
+  
   {for (var i = 0, n = this.products.length; i < n; ++i)}
+
+    {var cn = (i % 2) ? "even" : "odd"}
     {var prod = this.products[i]}
     {var subtotal = prod.qty * prod.price}
     {script}total = total + subtotal;{/script}
-    {var cn = (i % 2) ? "even" : "odd"}
+
     ${product(prod, subtotal, cn)}
+
   {/for}
   </tbody>
   <tfoot>

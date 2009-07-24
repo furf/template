@@ -7,83 +7,80 @@
 
 	<title>Template</title>
 	<link rel="stylesheet" href="template.css" type="text/css" media="screen" title="no title" charset="utf-8">
-  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.3.2/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="http://assets.dev/js/jquery/jquery-1.3.2.min.js" type="text/javascript" charset="utf-8"></script>
 	<script src="template-0.7b.js" type="text/javascript" charset="utf-8"></script>
 	<script type="text/javascript">
 	(function($) {
+    $(function() {
 
 
-    var iterations = 1,
-        i, n,
-        startLoadData,
-        endLoadData,
-        startLoadTemplate,
-        endLoadTemplate,
-        startParseTemplate,
-        template,
-        endParseTemplate,
-        startRenderTemplate,
-        html,
-        endRenderTemplate,
-        startAppendHTML,
-        endAppendHTML,
-        timeToLoadData,
-        timeToLoadTemplate,
-        timeToParseTemplate,
-        timeToRenderTemplate, 
-        timeToAppendHTML,
-        totalTime;
-        
-
-    /**
-     * Load data
-     */
-    startLoadData = new Date();
-    $.getJSON('data.json', function(data) {
-      endLoadData = new Date();
+      var iterations = 100,
+          i, n,
+          startLoadData,
+          endLoadData,
+          startLoadTemplate,
+          endLoadTemplate,
+          startParseTemplate,
+          template,
+          endParseTemplate,
+          startRenderTemplate,
+          html,
+          endRenderTemplate,
+          startAppendHTML,
+          endAppendHTML,
+          timeToLoadData,
+          timeToLoadTemplate,
+          timeToParseTemplate,
+          timeToRenderTemplate, 
+          timeToAppendHTML,
+          totalTime;
 
 
       /**
-       * Load template
+       * Load data
        */
-      startLoadTemplate = new Date();
-      $.get('template.jst', function(tpl) {
-        endLoadTemplate = new Date();
-
-            
-        /**
-         * Parse template
-         */
-        startParseTemplate = new Date();
-        for (i = 0; i < iterations; ++i) {
-
-          template = new Template(tpl);
-
-        }
-        endParseTemplate = new Date();
+      startLoadData = new Date();
+      $.getJSON('data.json', function(data) {
+        endLoadData = new Date();
 
 
         /**
-         * Render template
+         * Load template
          */
-        startRenderTemplate = new Date();
-        for (i = 0; i < iterations; ++i) {
+        startLoadTemplate = new Date();
+        $.get('template.jst', function(tpl) {
+          endLoadTemplate = new Date();
 
-          html = template.render(data);
+          console.log('tpl.length', tpl.length);
 
-        }
-        endRenderTemplate = new Date();
+          /**
+           * Parse template
+           */
+          startParseTemplate = new Date();
+          for (i = 0; i < iterations; ++i) {
+            template = new Template(tpl);
+          }
+          endParseTemplate = new Date();
 
-          
-        $(function() {
-          
-          
+
+
+          /**
+           * Render template
+           */
+          startRenderTemplate = new Date();
+          for (i = 0; i < iterations; ++i) {
+            html = template.render(data);
+          }
+          endRenderTemplate = new Date();
+
+
           /**
            * AppendHTML
            */
           startAppendHTML = new Date();
           $('#output').html(html);
           endAppendHTML = new Date();
+
 
 
           /**
@@ -97,6 +94,7 @@
           totalTime            = endAppendHTML - startLoadData;
 
 
+
           /**
            * Log times
            */
@@ -106,20 +104,16 @@
           console.log('Render Template: ' + timeToRenderTemplate + 'ms');
           console.log('Append HTML: '     + timeToAppendHTML + 'ms');
           console.log('Total: '           + totalTime + 'ms');
+          console.log('src.length', template.src.length);
+          console.log('src', template.src);
 
-          // try {
-          //   console.log(template._render.toSource());
-          // } catch (e) {
-          //   console.log(template._render);      
-          // }
+
 
         });
-      
-      
       });
 
+      
     });
-
 	})(jQuery);
 	</script>
 </head>
