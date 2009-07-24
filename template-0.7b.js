@@ -2,10 +2,6 @@ var Template = function (template) {
   this.parse(template);
 };
 
-Template.addCustomDefinition = function(tag, definition) {
-  
-};
-
 Template.tagDefinitions = {
 
   'var': {
@@ -15,17 +11,17 @@ Template.tagDefinitions = {
 
   'if': {
     search: /^\((.*)\)$/,
-    replace: 'if ($1) {'
+    replace: 'if($1){'
   },
 
   'elseif': {
     search: /^\((.*)\)$/,
-    replace: '} else if ($1) {'
+    replace: '}else if($1){'
   },
 
   'else': {
     search: '',
-    replace: '} else {'
+    replace: '}else{'
   },
 
   '/if': {
@@ -35,7 +31,7 @@ Template.tagDefinitions = {
 
   'for': {
     search: /^\((.*)\)$/,
-    replace: 'for ($1) {'
+    replace: 'for($1){'
   },
 
   '/for': {
@@ -45,7 +41,7 @@ Template.tagDefinitions = {
 
   'foreach': {
     search: /^\((?:(.*) as (.*))\)$/,
-    replace: 'var $2, _prop;\nfor (_prop in $1) {\n$2 = $1[_prop];'
+    replace: 'var $2,__$2,$2_index=-1;for(__$2 in $1){if(!$1.hasOwnProperty(__$2)){continue;}$2=$1[__$2];$2_index++;'
   },
 
   '/foreach': {
@@ -53,49 +49,42 @@ Template.tagDefinitions = {
     replace: '}'
   },
 
-  // Old subroutines didn't support binding of this key
-  
-  // 'sub': {
-  //   search: /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\((.*)\)$/,
-  //   replace: 'var $1 = function ($2) {\nvar html = "";'
-  // },
-  // 
-  // '/sub': {
-  //   search: '',
-  //   replace: 'return html;\n};'
-  // },
-
   'sub': {
     search: /^([a-zA-Z_$][a-zA-Z0-9_$]*)\s*\((.*)\)$/,
-    replace: 'var $1 = (function(fn, scope) {\nreturn function() {\nreturn fn.apply(scope, arguments);\n};\n})(function ($2) {\nvar html = "";'
+    replace: 'var $1=bind(function($2){var html="";'
   },
 
   '/sub': {
     search: '',
-    replace: 'return html;\n}, this);'
+    replace: 'return html;},this);'
   },
 
   'script': {
     search: '',
     replace: ''
   },
-  
+
   '/script': {
     search: '',
     replace: ''
   },
-  
+
   'log': {
     search: /^\((.*)\)$/,
     replace: 'console.log($1);'
   },
-  
+
   'dir': {
     search: /^\((.*)\)$/,
     replace: 'console.dir($1);'
   }
 };
 
+Template.bind = function(f, o) {
+  return function() {
+    return f.apply(o, arguments);
+  };
+};
 
 Template.prototype = {
 
@@ -118,14 +107,14 @@ Template.prototype = {
   replace: function (match, token, tag, condition, offset) {
 
     var src, def, defs = Template.tagDefinitions,
-        htmlClose = '";\n',
-        htmlOpen = '\nhtml += "';
+        htmlClose = '";',
+        htmlOpen = 'html+="';
 
     /**
      * Replace token
      */
     if (token) {
-      src = 'html += ' + token + ';';
+      src = 'html+=' + token + ';';
 
     /**
      * Replace tag
@@ -146,22 +135,19 @@ Template.prototype = {
     return htmlClose + src + htmlOpen;
   },
 
-
   parse: function (tpl) {
 
-    var src = 'var html = "";\nhtml += "' +         // open source code
-      tpl.replace(/\s*[\n\r]+\s*/g, ' ')            // strip linebreaks
-        .replace(/"/g, '\\"')                       // escape quotes
-        .replace(this.tagRegExp, this.replace)      // replace tokens/tags
-        // @TODO: Empty string removal not working
-        .replace('html += "";\n', '') +             // remove empty strings
-      '";\nreturn html;';                           // close source code
+    tpl = tpl
+      .replace(/<!--(.*?)-->/g, '')                 // strip comments
+      .replace(/\s+/g, ' ')                         // reduce whitespace
+      .replace(/"/g, '\\"')                         // escape quotes
+      .replace(this.tagRegExp, this.replace)        // replace tokens/tags
+      .replace(/html\+="";/g, '');                  // remove empty strings
 
-    // console.log(src);
+    this.src = 'var bind=Template.bind,html="' + tpl + '";return html;';
 
-    this._render = new Function(src);               // render function
+    this._render = new Function(this.src);          // render function
   },
-
 
   render: function (data) {
     return this._render.call(data);                 // scoped render function
