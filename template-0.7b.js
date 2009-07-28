@@ -41,7 +41,7 @@ Template.tagDefinitions = {
 
   'foreach': {
     search: /^\((?:(.*) as (.*))\)$/,
-    replace: 'var $2,__$2,$2_index=-1;for(__$2 in $1){if(!$1.hasOwnProperty(__$2)){continue;}$2=$1[__$2];$2_index++;'
+    replace: 'var $2,$2__prop,$2_index=-1;for($2__prop in $1){if(!$1.hasOwnProperty($2__prop)){continue;}$2=$1[$2__prop];$2_index++;'
   },
 
   '/foreach': {
