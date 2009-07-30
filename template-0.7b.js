@@ -114,7 +114,7 @@ Template.prototype = {
      * Replace token
      */
     if (token) {
-      src = 'html+=' + token + ';';
+      src = 'html+=' + token.replace(/\\"/g, '"') + ';';
 
     /**
      * Replace tag
